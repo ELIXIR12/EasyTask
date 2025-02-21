@@ -115,8 +115,15 @@ struct ContentView: View {
     func processTasks() {
         let newTasks = tasks
             .split(separator: ",")
-            .map { TodoListItem(text: $0.trimmingCharacters(in: .whitespaces)) }
-        
+            .map { task in
+                var temp = task.trimmingCharacters(in: .whitespaces)
+                temp = temp.capitalized
+                return TodoListItem(text: temp)
+            }
+            .filter { newTask in  // Filter out duplicates
+                !processedTasks.contains(where: { $0.text == newTask.text })
+            }
+
         processedTasks = (processedTasks + newTasks).sorted { $0.text < $1.text }
     }
 
